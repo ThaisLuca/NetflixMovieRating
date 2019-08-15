@@ -53,5 +53,3 @@ def get_data_information(data):
 		ax.text(p.iloc[i-1][0]/4, i-1, 'Rating {}: {:.0f}%'.format(i, p.iloc[i-1][0]*100 / p.sum()[0]), color='white', weight='bold')
 
 	plt.show()
-
-get_data_information(load_dataset(TRAINING_SET_PATH))
