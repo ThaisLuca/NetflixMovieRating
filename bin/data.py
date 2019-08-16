@@ -14,15 +14,19 @@ import matplotlib.pyplot as plt
 from preprocessing import *
 
 TRAINING_SET_PATH = '/resource/combined_data/'	
+MOVIE_FILE_PATH = '/resource/movie_titles.csv'
 
 # Lists all files in a folder
 def get_list_files(path):
 	return [f for f in listdir(path) if isfile(join(path, f))]
 
+def get_path(path):
+	return os.getcwd() + path
+
 # Loads the csv file into a DataFrame
 def load_dataset(path):
 
-	file_path = os.getcwd() + path
+	file_path = get_path(path)
 	files = get_list_files(file_path)[:2]
 
 	print("Loading files...")
@@ -34,6 +38,15 @@ def load_dataset(path):
 	dt.index = np.arange(0,len(dt))
 	print('Full dataset shape: {}'.format(dt.shape))
 	return dt
+
+# Loads movies file and maps their ids into a DataFrame
+def load_movie_file(path):
+	file_path = get_path(path)
+
+	print("Loading movies file.")
+	df = pd.read_csv(file_path, encoding = "ISO-8859-1", header = None, names = ['MovieID', 'Year', 'Name'])
+	df.set_index('MovieID', inplace = True)
+	return df
 
 # Shows more information about the dataset 
 def get_data_information(data):
@@ -56,3 +69,5 @@ def get_data_information(data):
 		ax.text(p.iloc[i-1][0]/4, i-1, 'Rating {}: {:.0f}%'.format(i, p.iloc[i-1][0]*100 / p.sum()[0]), color='white', weight='bold')
 
 	plt.show()
+
+load_movie_file(MOVIE_FILE_PATH)

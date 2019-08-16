@@ -58,6 +58,12 @@ def slice_data(data):
 	print('Original Shape: {}'.format(data.shape))
 	data = data[~data['MovieID'].isin(drop_movie_list)]
 	data = data[~data['CustomerID'].isin(drop_cust_list)]
-	print('After trim shape: {}'.format(data.shape))
-	print('Data Examples')
-	print(data.iloc[::5000000, :])
+	#print('After trim shape: {}'.format(data.shape))
+	#print('Data Examples')
+	#print(data.iloc[::5000000, :])
+
+	return data
+
+# Formats data into a huge matrix
+def format_data(data):
+	return pd.pivot_table(data, values='Rating', index='CustomerID', columns='MovieID')
