@@ -6,15 +6,11 @@
 
 import os, sys
 import pandas as pd
+import numpy as np
 
 from os import listdir
 from os.path import isfile, join
 import matplotlib.pyplot as plt
-
-from preprocessing import *
-
-TRAINING_SET_PATH = '/resource/combined_data/'	
-MOVIE_FILE_PATH = '/resource/movie_titles.csv'
 
 # Lists all files in a folder
 def get_list_files(path):
@@ -40,7 +36,7 @@ def load_dataset(path):
 	return dt
 
 # Loads movies file and maps their ids into a DataFrame
-def load_movie_file(path):
+def load_movies_file(drop_movie_list, path):
 	file_path = get_path(path)
 
 	print("Loading movies file.")
@@ -69,5 +65,3 @@ def get_data_information(data):
 		ax.text(p.iloc[i-1][0]/4, i-1, 'Rating {}: {:.0f}%'.format(i, p.iloc[i-1][0]*100 / p.sum()[0]), color='white', weight='bold')
 
 	plt.show()
-
-load_movie_file(MOVIE_FILE_PATH)

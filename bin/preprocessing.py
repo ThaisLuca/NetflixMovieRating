@@ -62,7 +62,7 @@ def slice_data(data):
 	#print('Data Examples')
 	#print(data.iloc[::5000000, :])
 
-	return data
+	return drop_movie_list, data
 
 # Formats data into a huge matrix
 def format_data(data):
