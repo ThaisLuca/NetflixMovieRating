@@ -11,6 +11,8 @@ from os import listdir
 from os.path import isfile, join
 import matplotlib.pyplot as plt
 
+from preprocessing import *
+
 TRAINING_SET_PATH = '/resource/combined_data/'	
 
 # Lists all files in a folder
@@ -29,6 +31,7 @@ def load_dataset(path):
 		#dt.append(pd.read_csv(file_path + file,  delimiter = ','))
 
 	dt['Rating'] = dt['Rating'].astype(float)
+	dt.index = np.arange(0,len(dt))
 	print('Full dataset shape: {}'.format(dt.shape))
 	return dt
 
@@ -53,3 +56,6 @@ def get_data_information(data):
 		ax.text(p.iloc[i-1][0]/4, i-1, 'Rating {}: {:.0f}%'.format(i, p.iloc[i-1][0]*100 / p.sum()[0]), color='white', weight='bold')
 
 	plt.show()
+
+
+remove_missing_values(load_dataset(TRAINING_SET_PATH))
