@@ -7,6 +7,8 @@
 import pandas as pd
 import numpy as np
 
+from scipy.sparse import csr_matrix
+
 # Removes missing values such as null and NaN
 def remove_missing_values(data):
 	print("Cleaning data..")
@@ -65,5 +67,5 @@ def slice_data(data):
 	return drop_movie_list, data
 
 # Formats data into a huge matrix
-def format_data(data):
+def format_data_pivot_table(data):
 	return pd.pivot_table(data, values='Rating', index='CustomerID', columns='MovieID')
