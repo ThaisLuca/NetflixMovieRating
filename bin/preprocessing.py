@@ -60,7 +60,7 @@ def slice_data(data):
 	print('Original Shape: {}'.format(data.shape))
 	data = data[~data['MovieID'].isin(drop_movie_list)]
 	data = data[~data['CustomerID'].isin(drop_cust_list)]
-	#print('After trim shape: {}'.format(data.shape))
+	print('After trim shape: {}'.format(data.shape))
 	#print('Data Examples')
 	#print(data.iloc[::5000000, :])
 
