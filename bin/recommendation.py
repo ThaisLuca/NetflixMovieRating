@@ -4,9 +4,12 @@
 # Created by Thais Luca
 # PESC/COPPE/UFRJ
 
-from surprise import Reader, Dataset, SVD, evaluate, KNNBaseline
-from surprise.model_selection import cross_validate
 import numpy as np
+from collections import defaultdict
+from sklearn.neighbors import NearestNeighbors
+from sklearn.model_selection import train_test_split
+from surprise import Reader, Dataset, SVD
+
 
 # Males recommendation by user
 def recommend_by_user(user, data, movies, drop_movie_list, N):
@@ -30,44 +33,42 @@ def recommend_using_svd(data):
 
 	return predictions
 
-# Recommendation using KNN as learning algorithm
+# Recommendation using KNN as learning algorithm for movie movie similarity (User_based = True)
 def recommend_using_knn(data, N):
-	reader = Reader()
+	users_neighbors = defaultdict()
 
-	sim_options = {'name': 'pearson_baseline', 'shrinkage': 10, 'min_support': 10, 'user_based': True}
+	trainset, testset = train_test_split(data, test_size=0.3)
 
-	data = Dataset.load_from_df(data[['CustomerID', 'MovieID', 'Rating']][:100000], reader)
-	trainset = data.build_full_trainset()
-
-	knn = KNNBaseline(k=N, sim_options=sim_options)
+	knn = NearestNeighbors(n_neighbors=N, algorithm='ball_tree')
 	knn.fit(trainset)
 
-	testset = trainset.build_anti_testset()
 	print("Test set", len(testset))
-	predictions = knn.test(testset)
+	predictions = knn.kneighbors(testset, return_distance=False)
 
-	return predictions
+	i = 0
+	for index, row in testset.iterrows():
+		users_neighbors[row['CustomerID']] = predictions[i]
+		i += 1
 
-
-# Tests SVD accuracy
-def test_svd(data):
-	reader = Reader()
-
-	data = Dataset.load_from_df(data[['CustomerID', 'MovieID', 'Rating']][:100000], reader)
-
-	svd = SVD()
-	cross_validate(svd, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
-
+	return users_neighbors
 
 def recommend_knn(user, data, N):
 	kdt = KDTree(data, leaf_size=30, metric='euclidean')
 	return kdt.query(user, k=data.shape[1], return_distance=False)
 
-# Tests KNN accuracy
-def test_KNN(data):
-	reader = Reader()
+def select_movies_knn(predictions, data):
+	movies_per_user = defaultdict()
 
-	data = Dataset.load_from_df(data[['CustomerID', 'MovieID', 'Rating']][:100000], reader)
+	for key, val in predictions.items():
+		neighbors = data[data['CustomerID'].isin(val)]
+		movies_seen = data[data['CustomerID'].isin([key])]
+		movies_per_user[key] = data[~data['MovieID'].isin(movies_seen)]
 
-	knn = KNNBasic()
-	cross_validate(knn, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+		print "neighbors", neighbors
+		print "movies_seen", movies_seen
+		print "movies_per_user", movies_per_user[key]
+
+		break
+		
+	print movies_per_user
+	return movies_per_user

@@ -28,7 +28,7 @@ def remove_missing_values(data):
 	last_record = np.full((1,len(data) - dt_nan.iloc[-1,0] - 1), movie_id)
 	movies = np.append(movies, last_record)
 
-	print('Movie array: {}'.format(movies))
+	#print('Movie array: {}'.format(movies))
 	print('Length: {}'.format(len(movies)))
 
 	print("Removing missing values.")
@@ -65,6 +65,12 @@ def slice_data(data):
 	#print(data.iloc[::5000000, :])
 
 	return drop_movie_list, data
+
+# Checks for duplicated ratings
+def remove_duplicates(data):
+	dup_bool = data.duplicated(['MovieID', 'CustomerID', 'Rating'])
+	print("There are {} duplicate rating entries in the data..".format(sum(dup_bool)))
+	return dup_bool
 
 # Formats data into a huge matrix
 def format_data_pivot_table(data):

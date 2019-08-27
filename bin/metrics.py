@@ -81,6 +81,6 @@ def show_all_users_top_n(top_n):
 def show_user_top_n(top_n_user, movies):
 	movies_for_user = []
 	for movie in top_n_user:
-		movies_for_user.append(movies[movies.index == movie[0]])
+		movies_for_user.append(movies[movies.index == movie])
 
 	print movies_for_user
